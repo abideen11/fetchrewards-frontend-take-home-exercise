@@ -21,11 +21,11 @@ const App = () => {
       .get("https://frontend-take-home.fetchrewards.com/form")
       .then((resp) => {
         setData(resp.data);
-        addOccuptaions(resp.data);
+        addData(resp.data);
       });
   }, [data]);
 
-  const addOccuptaions = (input) => {
+  const addData = (input) => {
     if (occupationsData.length === 1 && statesData.length === 1) {
       input.occupations.map((occupation) => occupationsData.push(occupation));
       input.states.map((state) => statesData.push(state.name));
@@ -58,38 +58,20 @@ const App = () => {
   const submitForm = (e) => {
     e.preventDefault();
 
+    let fullNameArray = fullName.split("");
+
     let emailArray = email.split("");
     let emailAt = emailArray.findIndex((element) => element === "@");
-    let emailDot = -1;
-    for (let [index, element] of emailArray.entries()) {
-      if (element === ".") {
-        emailDot = index;
-      }
-    }
-    let emailAfterDot = 0;
-    if (
-      emailArray.length - emailDot >= 2 &&
-      emailAt > 0 &&
-      emailDot > 0 &&
-      emailDot > emailAt &&
-      emailDot > emailAfterDot &&
-      (emailArray.length - 1 !== " " || emailArray.length - 1 === ".")
-    ) {
-      emailAfterDot = emailArray.length - 1;
-    }
+    let emailDot = emailArray.findIndex((element) => element === ".");
 
     if (
       fullName === "" ||
+      fullNameArray[0] === " " ||
+      fullNameArray[fullNameArray.length - 1] === " " ||
       fullName.length < 2 ||
       fullName.includes(" ") === false ||
       email === "" ||
-      email.includes(" ") === true ||
-      email.includes("@") === false ||
-      email.includes(".") === false ||
       emailDot - emailAt < 2 ||
-      emailDot < 0 ||
-      emailAt < 0 ||
-      emailAfterDot <= emailDot ||
       password.length < 1 ||
       password.includes(" ") === true ||
       selectOccupation === "Please select an occupation" ||
@@ -97,39 +79,34 @@ const App = () => {
     ) {
       if (
         fullName === "" ||
+        fullNameArray[0] === " " ||
+        fullNameArray[fullNameArray.length - 1] === " " ||
         fullName.length < 2 ||
         fullName.includes(" ") === false
       ) {
-        alert("Please enter your full name");
+        alert("Please enter your full name. E.g. 'X X'.");
       }
-      if (
-        email === "" ||
-        email.includes(" ") === true ||
-        email.includes("@") === false ||
-        email.includes(".") === false ||
-        emailDot - emailAt < 2 ||
-        emailDot < 0 ||
-        emailAt < 0 ||
-        emailAfterDot === 0
-      ) {
+      if (email === "" || emailDot - emailAt < 2) {
         if (email === "") {
-          alert("Please enter your email address");
+          alert("Please enter your email address. E.g. 'X@X.X'.");
         } else {
-          alert("Please enter a valid email address");
+          alert("Please enter a valid email address. E.g. 'X@X.X'.");
         }
       }
       if (password.length < 1 || password.includes(" ") === true) {
         if (password.length < 1) {
-          alert("Please enter your password");
+          alert("Please enter your password. At least 1 char and NO spaces.");
         } else if (password.length > 0 && password.includes(" ") === true) {
-          alert("Please enter a valid password");
+          alert(
+            "Please enter a valid password. At least 1 char and NO spaces."
+          );
         }
       }
       if (selectOccupation === "Please select an occupation") {
-        alert("Please select an occupation");
+        alert("Please select an occupation.");
       }
       if (selectState === "Please select a state") {
-        alert("Please select a state");
+        alert("Please select a state.");
       }
     } else {
       setFullName("");
@@ -151,7 +128,7 @@ const App = () => {
               <img src={fetchrewardslogo} alt="fetchrewards icon" />
             </div>
             <div className="app-2dv2">
-              <h1>Thank you</h1>
+              <h1>Thank You</h1>
               <p>Your form has been submitted.</p>
               <div className="app-3dv">
                 <button onClick={formToSubmit}>Sign Up</button>
